@@ -4,17 +4,12 @@
 COMMAND="$1"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-STATE_DIR_MARKER="$SCRIPT_DIR/../.state-dir"
-if [ ! -s "$STATE_DIR_MARKER" ]; then
-  if [ -n "$HERDR_PLUGIN_STATE_DIR" ]; then
-    echo "$HERDR_PLUGIN_STATE_DIR" >"$STATE_DIR_MARKER"
-  else
-    echo "pomodoro-cmd: HERDR_PLUGIN_STATE_DIR not set - was this started outside a herdr plugin action?" >&2
-    read -n 1 -s -r -p "Press any key to close..."
-    exit 1
-  fi
+if [ -z "$HERDR_PLUGIN_STATE_DIR" ]; then
+  echo "pomodoro-cmd: HERDR_PLUGIN_STATE_DIR not set - was this started outside a herdr plugin action?" >&2
+  read -n 1 -s -r -p "Press any key to close..."
+  exit 1
 fi
-STATE_DIR="$(cat "$STATE_DIR_MARKER")"
+STATE_DIR="$HERDR_PLUGIN_STATE_DIR"
 mkdir -p "$STATE_DIR" || exit 1
 DAEMON_PID_FILE="$STATE_DIR/daemon.pid"
 DISPLAY_FILE="$STATE_DIR/display"

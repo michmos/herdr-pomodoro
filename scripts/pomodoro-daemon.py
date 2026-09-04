@@ -13,7 +13,6 @@ import time
 from enum import Enum
 from pathlib import Path
 
-SCRIPT_DIR = Path(__file__).resolve().parent
 DISPLAY_REFRESH = 60
 FOREVER_SLEEP = 86400  # ~1 day: effectively "forever" while idle; woken early by a signal
 
@@ -62,15 +61,15 @@ def load_config() -> dict:
 
 
 def read_state_dir() -> Path:
-    marker = SCRIPT_DIR.parent / ".state-dir"
-    if not marker.exists() or marker.stat().st_size == 0:
+    state_dir = os.environ.get("HERDR_PLUGIN_STATE_DIR")
+    if not state_dir:
         sys.exit(
-            f"pomodoro-daemon: {marker} missing - "
-            "has herdr run this plugin's startup hook yet?"
+            "pomodoro-daemon: HERDR_PLUGIN_STATE_DIR not set - "
+            "was this started outside a herdr plugin action?"
         )
-    state_dir = Path(marker.read_text().strip())
-    state_dir.mkdir(parents=True, exist_ok=True)
-    return state_dir
+    path = Path(state_dir)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 class PomodoroDaemon:
