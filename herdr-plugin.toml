@@ -7,17 +7,7 @@ platforms = ["linux", "macos"]
 
 
 [[startup]]
-command = ["sh", "-c", 'mkdir -p "$HERDR_PLUGIN_CONFIG_DIR" && echo "$HERDR_PLUGIN_STATE_DIR" > "$HERDR_PLUGIN_CONFIG_DIR/.state-dir"']
-
-# Seed the user config on first run only - never overwrite an existing one
-[[startup]]
-command = ["sh", "-c", 'mkdir -p "$HERDR_PLUGIN_CONFIG_DIR" && [ -f "$HERDR_PLUGIN_CONFIG_DIR/config" ] || cp "$HERDR_PLUGIN_ROOT/config.default" "$HERDR_PLUGIN_CONFIG_DIR/config"']
-
-# Deploy status script into config dir - the only plugin path known ahead of
-# time (install dir has an unpredictable suffix appended to it), so it's the
-# only one a user's tab_bar command can reference
-[[startup]]
-command = ["sh", "-c", 'mkdir -p "$HERDR_PLUGIN_CONFIG_DIR" && cp "$HERDR_PLUGIN_ROOT/scripts/pomodoro-status.sh" "$HERDR_PLUGIN_CONFIG_DIR/pomodoro-status.sh"']
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-setup.sh"']
 
 [[panes]]
 id = "menu"
@@ -27,6 +17,12 @@ height = "30%"
 width = "30%"
 command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-menu.sh"']
 
+
+[[actions]]
+id = "setup"
+title = "Pomodoro: run setup (config dir + tab bar script)"
+contexts = ["workspace"]
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-setup.sh"']
 
 [[actions]]
 id = "menu"

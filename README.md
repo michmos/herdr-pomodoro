@@ -27,8 +27,12 @@ Keep your focus during development using the **pomodoro** technique. **Notificat
 ## Setup
 ### Install
 ```
+# 1. install plugin
 herdr plugin install michmos/herdr-pomodoro
+# 2. invoke setup action (startup hooks don't run if server already running)
+herdr plugin action invoke herdr-pomodoro.setup
 ```
+
 Dependencies:
 - [fzf](https://github.com/junegunn/fzf) installed and on `PATH`
 - Python 3 installed and on `PATH` (runs the daemon)
@@ -99,6 +103,7 @@ They will be used on the next session (after `Restart`)
 Three pieces, one goal: a status line that updates every second without burning CPU.
 
 - **Daemon** (`scripts/pomodoro-daemon.py`) — one process per active session. It sleeps almost the entire time and just wakes up once a minute to update the plugin's state. It also wakes early the instant a signal arrives, triggered by the `Next` keybinding or a menu entry. The status is saved formatted to a status file, used by the following script.
-- **Status script** (`scripts/pomodoro-status.sh`) — deployed into the plugin's config dir on every startup (a fixed, known path, unlike the install dir), since that's what a user's `tab_bar_right` command can reference ahead of time. Polled by herdr every `interval_seconds`, it `cats` the status file and herdr uses this standard output to update the status bar. This script is deliberately as light as possible, so it can be run frequently with little CPU load.
+- **Status script** (`scripts/pomodoro-status.sh`) — deployed into the plugin's config dir (a fixed, known path, unlike the install dir), since that's what a user's `tab_bar_right` command can reference ahead of time. Polled by herdr every `interval_seconds`, it `cats` the status file and herdr uses this standard output to update the status bar. This script is deliberately as light as possible, so it can be run frequently with little CPU load.
 - **Menu / command / config scripts** (`pomodoro-menu.sh`, `pomodoro-cmd.sh`, `pomodoro-config.sh`) — the user-facing side. The menu serves as the user's entry point and then triggers the other two scripts depending on the selected menu entry.
+- **Setup script** (`scripts/pomodoro-setup.sh`) — deploys the status script, default config, and state-dir marker into the config dir. Runs as a startup hook on every session (re)start, and as the `setup` action - latter one is required for users who don't want to restart the server after installing the plugin
 
