@@ -1,0 +1,8 @@
+# Pomodoro Plugin Configuration
+# Edit these values to customize your Pomodoro sessions.
+# Changes take effect the next time the daemon is (re)started.
+
+FOCUS_LENGTH=25        # Length of a focus session, in minutes
+BREAK_LENGTH=5         # Length of a regular break, in minutes
+LONG_BREAK_LENGTH=15   # Length of the long break after NUM_SESSIONS, in minutes
+NUM_SESSIONS=4         # Focus sessions per cycle before a long break

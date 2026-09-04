@@ -1,0 +1,4 @@
+- use comments only when absolutely required for understanding
+- Avoid multi line comments
+- Stick to common conventions regarding variable naming, file naming and function naming
+- keep things simple, readable and maintainable

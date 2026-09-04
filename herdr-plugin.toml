@@ -1,0 +1,60 @@
+id = "herdr-pomodoro"
+name = "herdr-pomodoro"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Pomodoro timing system for herdr"
+platforms = ["linux", "macos"]
+
+
+[[startup]]
+command = ["sh", "-c", 'echo "$HERDR_PLUGIN_STATE_DIR" > "$HERDR_PLUGIN_ROOT/.state-dir"']
+
+# Seed the user config on first run only - never overwrite an existing one
+[[startup]]
+command = ["sh", "-c", 'mkdir -p "$HERDR_PLUGIN_CONFIG_DIR" && [ -f "$HERDR_PLUGIN_CONFIG_DIR/config" ] || cp "$HERDR_PLUGIN_ROOT/config.default" "$HERDR_PLUGIN_CONFIG_DIR/config"']
+
+
+[[panes]]
+id = "menu"
+title = "Pomodoro menu"
+placement = "popup"
+height = "30%"
+width = "30%"
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-menu.sh"']
+
+
+[[actions]]
+id = "menu"
+title = "Pomodoro menu"
+contexts = ["workspace"]
+command = ["sh", "-c", '"$HERDR_BIN_PATH" plugin pane open --plugin "$HERDR_PLUGIN_ID" --entrypoint menu --placement popup --focus']
+
+[[actions]]
+id = "start"
+title = "Pomodoro: start / resume session"
+contexts = ["workspace"]
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-cmd.sh" start']
+
+[[actions]]
+id = "end"
+title = "Pomodoro: end session"
+contexts = ["workspace"]
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-cmd.sh" end']
+
+[[actions]]
+id = "pause"
+title = "Pomodoro: pause session"
+contexts = ["workspace"]
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-cmd.sh" pause']
+
+[[actions]]
+id = "restart"
+title = "Pomodoro: restart session"
+contexts = ["workspace"]
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-cmd.sh" restart']
+
+[[actions]]
+id = "next"
+title = "Pomodoro: advance to next segment"
+contexts = ["workspace"]
+command = ["sh", "-c", 'exec "$HERDR_PLUGIN_ROOT/scripts/pomodoro-cmd.sh" next']
